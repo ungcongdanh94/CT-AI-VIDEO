@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-line;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  :focus-visible {
+    outline: 2px solid #00a651;
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /*
+   * The "extrusion rail" - a thin channel with a green profile that slides
+   * in, echoing an aluminum extrusion press. Used behind the active step in
+   * the progress list. This is the page's one deliberate signature.
+   */
+  .extrusion-rail {
+    position: relative;
+    height: 3px;
+    width: 100%;
+    background: theme("colors.line");
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .extrusion-fill {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, theme("colors.brand.dark"), theme("colors.brand.DEFAULT"));
+    border-radius: 999px;
+    transform-origin: left;
+  }
+}

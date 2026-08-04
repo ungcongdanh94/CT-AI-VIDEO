@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  PENDING
+  UPLOADING
+  ANALYZING
+  SCRIPTING
+  VOICING
+  RENDERING
+  COMPLETED
+  FAILED
+}
+
+// One row per "Generate Video" click. This is intentionally the ONLY table.
+// No users, no CRM, no analytics - just enough state to drive the progress
+// bar and to serve the finished files back to the browser.
+model Job {
+  id        String    @id @default(cuid())
+  status    JobStatus @default(PENDING)
+  step      String? // human readable current step, shown in the UI
+
+  product   String
+  style     String
+  duration  Int
+
+  assets    Json // [{ url, resourceType, publicId }]
+
+  script    String? @db.Text
+  captionFb String? @db.Text
+  captionTt String? @db.Text
+  hashtags  String? @db.Text
+  cta       String? @db.Text
+  videoPrompt String? @db.Text
+
+  videoPath     String?
+  thumbnailPath String?
+  voicePath     String?
+  scriptPath    String?
+  captionPath   String?
+  hashtagsPath  String?
+
+  errorMessage String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

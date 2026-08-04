@@ -1,0 +1,8 @@
+node_modules
+.next
+.env
+.env.local
+public/outputs/*
+!public/outputs/.gitkeep
+*.log
+.DS_Store
