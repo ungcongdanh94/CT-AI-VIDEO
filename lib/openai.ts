@@ -3,9 +3,18 @@ import type { ImageAnalysis, ScriptBundle, UploadedAsset, ProductOption, StyleOp
 import { safeJsonParse } from "./utils";
 import { buildAnalysisPrompt, buildScriptPrompt } from "./prompt";
 
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// The OpenAI SDK throws immediately if the API key is missing at
+// construction time. `next build` imports every route module to analyze it
+// (even ones it never calls), so a top-level `new OpenAI(...)` would crash
+// the build itself whenever OPENAI_API_KEY isn't set in the build
+// environment. Lazily creating the client on first real use avoids that.
+let _openai: OpenAI | null = null;
+export function getOpenAI(): OpenAI {
+  if (!_openai) {
+    _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return _openai;
+}
 
 // Model name is env-configurable so this project keeps working as OpenAI
 // ships newer models - point this at whatever multimodal model your account
@@ -28,7 +37,7 @@ export async function analyzeImages(assets: UploadedAsset[]): Promise<ImageAnaly
     };
   }
 
-  const response = await openai.responses.create({
+  const response = await getOpenAI().responses.create({
     model: TEXT_MODEL,
     input: [
       {
@@ -62,7 +71,7 @@ export async function generateScriptBundle(params: {
   style: StyleOption;
   duration: number;
 }): Promise<ScriptBundle> {
-  const response = await openai.responses.create({
+  const response = await getOpenAI().responses.create({
     model: TEXT_MODEL,
     input: [
       {

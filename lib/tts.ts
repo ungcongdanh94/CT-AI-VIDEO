@@ -1,5 +1,5 @@
 import fs from "fs";
-import { openai } from "./openai";
+import { getOpenAI } from "./openai";
 import { ensureDir } from "./fs-utils";
 import path from "path";
 
@@ -12,7 +12,7 @@ const TTS_VOICE = process.env.OPENAI_TTS_VOICE ?? "alloy";
  * don't need to juggle buffers before handing the file to ffmpeg.
  */
 export async function generateVoiceover(script: string, outPath: string): Promise<Buffer> {
-  const response = await openai.audio.speech.create({
+  const response = await getOpenAI().audio.speech.create({
     model: TTS_MODEL,
     voice: TTS_VOICE as any,
     input: script,
