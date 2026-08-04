@@ -1,6 +1,9 @@
 # ---- deps ------------------------------------------------------------
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openssl && \
+    rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json* ./
 COPY prisma ./prisma
 RUN npm install
@@ -8,6 +11,9 @@ RUN npm install
 # ---- build -------------------------------------------------------------
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openssl && \
+    rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npx prisma generate
@@ -18,9 +24,9 @@ FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# ffmpeg is required at runtime by lib/ffmpeg.ts - installed via apt, not npm.
+# ffmpeg + openssl are required at runtime - installed via apt, not npm.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ffmpeg && \
+    apt-get install -y --no-install-recommends ffmpeg openssl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/node_modules ./node_modules
