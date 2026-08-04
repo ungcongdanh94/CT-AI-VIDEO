@@ -4,7 +4,7 @@ import { prisma } from "./db";
 import { analyzeImages, generateScriptBundle } from "./openai";
 import { generateVoiceover } from "./tts";
 import { renderVideo } from "./ffmpeg";
-import { downloadToFile, ensureDir, jobOutputDir } from "./utils";
+import { downloadToFile, ensureDir, jobOutputDir } from "./fs-utils";
 import type { GenerateRequestBody } from "@/types";
 import type { JobStatus } from "@prisma/client";
 

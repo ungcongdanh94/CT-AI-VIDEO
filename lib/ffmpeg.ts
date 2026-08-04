@@ -1,7 +1,7 @@
 import { spawn } from "child_process";
 import fs from "fs";
 import path from "path";
-import { ensureDir } from "./utils";
+import { ensureDir } from "./fs-utils";
 import type { ResourceType } from "@/types";
 
 const FFMPEG_BIN = process.env.FFMPEG_PATH ?? "ffmpeg";

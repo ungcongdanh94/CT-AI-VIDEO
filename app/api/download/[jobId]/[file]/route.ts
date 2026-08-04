@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { prisma } from "@/lib/db";
-import { jobOutputDir } from "@/lib/utils";
+import { jobOutputDir } from "@/lib/fs-utils";
 
 export const runtime = "nodejs";
 

@@ -1,24 +1,13 @@
-import fs from "fs";
-import path from "path";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-/** Tailwind class merge helper, used by the shadcn-style UI primitives. */
+/**
+ * Tailwind class merge helper, used by the shadcn-style UI primitives.
+ * This file is imported by client components, so it must stay free of any
+ * Node built-ins (fs, path, etc.) - those live in lib/fs-utils.ts instead.
+ */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-/** Root directory where per-job output files are written on disk. */
-export const OUTPUT_ROOT = path.join(process.cwd(), "public", "outputs");
-
-export function jobOutputDir(jobId: string) {
-  return path.join(OUTPUT_ROOT, jobId);
-}
-
-export function ensureDir(dir: string) {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
 }
 
 export function sleep(ms: number) {
@@ -38,17 +27,6 @@ export function safeJsonParse<T>(text: string, fallback: T): T {
   } catch {
     return fallback;
   }
-}
-
-/** Downloads a remote asset (e.g. a Cloudinary URL) to a local file path. */
-export async function downloadToFile(url: string, destPath: string): Promise<void> {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error(`Failed to download asset: ${url} (${res.status})`);
-  }
-  const buffer = Buffer.from(await res.arrayBuffer());
-  ensureDir(path.dirname(destPath));
-  fs.writeFileSync(destPath, buffer);
 }
 
 export function formatBytes(bytes: number): string {

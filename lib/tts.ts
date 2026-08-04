@@ -1,6 +1,6 @@
 import fs from "fs";
 import { openai } from "./openai";
-import { ensureDir } from "./utils";
+import { ensureDir } from "./fs-utils";
 import path from "path";
 
 const TTS_MODEL = process.env.OPENAI_TTS_MODEL ?? "gpt-4o-mini-tts";
