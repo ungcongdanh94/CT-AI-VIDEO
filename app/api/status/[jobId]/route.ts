@@ -4,8 +4,9 @@ import type { JobResponse } from "@/types";
 
 export const runtime = "nodejs";
 
-export async function GET(_req: NextRequest, { params }: { params: { jobId: string } }) {
-  const job = await prisma.job.findUnique({ where: { id: params.jobId } });
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ jobId: string }> }) {
+  const { jobId } = await params;
+  const job = await prisma.job.findUnique({ where: { id: jobId } });
 
   if (!job) {
     return NextResponse.json({ error: "Không tìm thấy tác vụ." }, { status: 404 });

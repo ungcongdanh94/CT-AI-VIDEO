@@ -21,14 +21,15 @@ const FILE_MAP: Record<string, { column: string; filename: string; contentType: 
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { jobId: string; file: string } }
+  { params }: { params: Promise<{ jobId: string; file: string }> }
 ) {
-  const entry = FILE_MAP[params.file];
+  const { jobId, file } = await params;
+  const entry = FILE_MAP[file];
   if (!entry) {
     return NextResponse.json({ error: "Loại tệp không hợp lệ." }, { status: 400 });
   }
 
-  const job = await prisma.job.findUnique({ where: { id: params.jobId } });
+  const job = await prisma.job.findUnique({ where: { id: jobId } });
   if (!job || !(job as any)[entry.column]) {
     return NextResponse.json({ error: "Tệp chưa sẵn sàng." }, { status: 404 });
   }
