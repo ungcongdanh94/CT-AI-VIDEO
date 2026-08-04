@@ -16,6 +16,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+RUN mkdir -p public/outputs
 RUN npx prisma generate
 RUN npm run build
 
